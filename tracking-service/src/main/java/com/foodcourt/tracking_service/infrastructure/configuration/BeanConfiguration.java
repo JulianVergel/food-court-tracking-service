@@ -1,5 +1,6 @@
 package com.foodcourt.tracking_service.infrastructure.configuration;
 
+import com.foodcourt.tracking_service.domain.api.IAuthenticatedUserPort;
 import com.foodcourt.tracking_service.domain.api.ITraceServicePort;
 import com.foodcourt.tracking_service.domain.spi.ITracePersistencePort;
 import com.foodcourt.tracking_service.domain.usecase.TraceUseCase;
@@ -16,6 +17,7 @@ public class BeanConfiguration {
 
     private final ITraceRepository traceRepository;
     private final ITraceEntityMapper traceEntityMapper;
+    private final IAuthenticatedUserPort authenticatedUserPort;
 
     @Bean
     public ITracePersistencePort tracePersistencePort() {
@@ -24,6 +26,6 @@ public class BeanConfiguration {
 
     @Bean
     public ITraceServicePort traceServicePort() {
-        return new TraceUseCase(tracePersistencePort());
+        return new TraceUseCase(tracePersistencePort(), authenticatedUserPort);
     }
 }
