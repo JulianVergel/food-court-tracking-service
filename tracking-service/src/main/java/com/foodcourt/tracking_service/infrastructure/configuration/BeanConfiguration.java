@@ -4,6 +4,7 @@ import com.foodcourt.tracking_service.domain.api.IAuthenticatedUserPort;
 import com.foodcourt.tracking_service.domain.api.ITraceServicePort;
 import com.foodcourt.tracking_service.domain.spi.ITracePersistencePort;
 import com.foodcourt.tracking_service.domain.usecase.TraceUseCase;
+import com.foodcourt.tracking_service.domain.utils.validations.OwnershipValidator;
 import com.foodcourt.tracking_service.infrastructure.output.jpa.adapter.TraceMongoAdapter;
 import com.foodcourt.tracking_service.infrastructure.output.jpa.mapper.ITraceEntityMapper;
 import com.foodcourt.tracking_service.infrastructure.output.jpa.repository.ITraceRepository;
@@ -18,6 +19,7 @@ public class BeanConfiguration {
     private final ITraceRepository traceRepository;
     private final ITraceEntityMapper traceEntityMapper;
     private final IAuthenticatedUserPort authenticatedUserPort;
+    private final OwnershipValidator ownershipValidator;
 
     @Bean
     public ITracePersistencePort tracePersistencePort() {
@@ -26,6 +28,6 @@ public class BeanConfiguration {
 
     @Bean
     public ITraceServicePort traceServicePort() {
-        return new TraceUseCase(tracePersistencePort(), authenticatedUserPort);
+        return new TraceUseCase(tracePersistencePort(), authenticatedUserPort, ownershipValidator);
     }
 }

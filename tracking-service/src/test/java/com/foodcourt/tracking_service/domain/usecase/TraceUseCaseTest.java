@@ -3,8 +3,11 @@ package com.foodcourt.tracking_service.domain.usecase;
 import com.foodcourt.tracking_service.domain.api.IAuthenticatedUserPort;
 import com.foodcourt.tracking_service.domain.exception.AccessDeniedException;
 import com.foodcourt.tracking_service.domain.exception.TraceNotFoundException;
+import com.foodcourt.tracking_service.domain.model.EmployeePerformance;
+import com.foodcourt.tracking_service.domain.model.OrderDuration;
 import com.foodcourt.tracking_service.domain.model.Trace;
 import com.foodcourt.tracking_service.domain.spi.ITracePersistencePort;
+import com.foodcourt.tracking_service.domain.utils.validations.OwnershipValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +31,9 @@ class TraceUseCaseTest {
     @Mock
     private IAuthenticatedUserPort authenticatedUserPort;
 
+    @Mock
+    private OwnershipValidator ownershipValidator;
+
     @InjectMocks
     private TraceUseCase traceUseCase;
 
@@ -45,7 +51,8 @@ class TraceUseCaseTest {
                 null,
                 "PENDIENTE",
                 null,
-                null
+                null,
+                5L
         );
     }
 
@@ -93,5 +100,44 @@ class TraceUseCaseTest {
         });
 
         verify(authenticatedUserPort, never()).getAuthenticatedUserId();
+    }
+
+    @Test
+    void mustGetOrderDurations() {
+        // Arrange
+        Long restaurantId = 1L;
+        List<OrderDuration> expectedDurations = List.of(new OrderDuration(101L, 15L));
+
+        // Simulamos que la validación de propiedad no lanza excepción
+        doNothing().when(ownershipValidator).validateRestaurantOwnership(restaurantId);
+        // Simulamos la respuesta del puerto de persistencia
+        when(tracePersistencePort.getOrderDurationsForRestaurant(restaurantId)).thenReturn(expectedDurations);
+
+        // Act
+        List<OrderDuration> actualDurations = traceUseCase.getOrderDurationsForRestaurant(restaurantId);
+
+        // Assert
+        assertEquals(expectedDurations, actualDurations);
+        verify(ownershipValidator, times(1)).validateRestaurantOwnership(restaurantId);
+        verify(tracePersistencePort, times(1)).getOrderDurationsForRestaurant(restaurantId);
+    }
+
+    @Test
+    void mustGetEmployeePerformanceRanking() {
+        // Arrange
+        Long restaurantId = 1L;
+        List<EmployeePerformance> expectedRanking = List.of(new EmployeePerformance(66L, 12.5));
+
+        // Simulamos la validación y la persistencia
+        doNothing().when(ownershipValidator).validateRestaurantOwnership(restaurantId);
+        when(tracePersistencePort.getEmployeePerformanceForRestaurant(restaurantId)).thenReturn(expectedRanking);
+
+        // Act
+        List<EmployeePerformance> actualRanking = traceUseCase.getEmployeePerformanceForRestaurant(restaurantId);
+
+        // Assert
+        assertEquals(expectedRanking, actualRanking);
+        verify(ownershipValidator, times(1)).validateRestaurantOwnership(restaurantId);
+        verify(tracePersistencePort, times(1)).getEmployeePerformanceForRestaurant(restaurantId);
     }
 }

@@ -25,11 +25,11 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // Protege todas las rutas bajo /api/v1/trace/
-                        .requestMatchers("/api/v1/trace/**").authenticated()
-                        // Permite el acceso a Swagger UI sin autenticación
+                        // 1. Primero, permite el acceso a las rutas públicas
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        // Cualquier otra petición debe ser autenticada
+                        // 2. Después, asegura tus endpoints de API
+                        .requestMatchers("/api/v1/**").authenticated()
+                        // 3. Finalmente, asegura cualquier otra petición
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> {})) // Configuración por defecto para JWT

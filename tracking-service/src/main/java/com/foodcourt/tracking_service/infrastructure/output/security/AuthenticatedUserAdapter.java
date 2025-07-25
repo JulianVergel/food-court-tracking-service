@@ -12,4 +12,17 @@ public class AuthenticatedUserAdapter implements IAuthenticatedUserPort {
         Jwt principal = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return principal.getClaim("id");
     }
+
+    @Override
+    public Long getOwnerRestaurantId() {
+        Jwt principal = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        Object restaurantIdClaim = principal.getClaim("restaurantId");
+
+        if (restaurantIdClaim instanceof Number) {
+            return ((Number) restaurantIdClaim).longValue();
+        }
+
+        return null;
+    }
 }
