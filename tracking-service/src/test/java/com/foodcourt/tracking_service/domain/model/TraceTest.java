@@ -19,9 +19,10 @@ class TraceTest {
         String newStatus = "EN_PREPARACION";
         Long employeeId = 3L;
         String employeeEmail = "employee@example.com";
+        Long restaurantId = 5L;
 
         // Act & Assert: Probamos el constructor con todos los argumentos y los getters
-        Trace traceWithAllArgs = new Trace(orderId, customerId, customerEmail, date, previousStatus, newStatus, employeeId, employeeEmail);
+        Trace traceWithAllArgs = new Trace(orderId, customerId, customerEmail, date, previousStatus, newStatus, employeeId, employeeEmail, restaurantId);
 
         assertEquals(orderId, traceWithAllArgs.getOrderId());
         assertEquals(customerId, traceWithAllArgs.getCustomerId());
@@ -31,6 +32,7 @@ class TraceTest {
         assertEquals(newStatus, traceWithAllArgs.getNewStatus());
         assertEquals(employeeId, traceWithAllArgs.getEmployeeId());
         assertEquals(employeeEmail, traceWithAllArgs.getEmployeeEmail());
+        assertEquals(restaurantId, traceWithAllArgs.getRestaurantId());
 
         // Act & Assert: Probamos el constructor sin argumentos y los setters
         Trace traceWithNoArgs = new Trace();
@@ -42,9 +44,11 @@ class TraceTest {
         traceWithNoArgs.setNewStatus(newStatus);
         traceWithNoArgs.setEmployeeId(employeeId);
         traceWithNoArgs.setEmployeeEmail(employeeEmail);
+        traceWithNoArgs.setRestaurantId(restaurantId);
 
         // Verificamos que los valores se asignaron correctamente
         assertEquals(orderId, traceWithNoArgs.getOrderId());
         assertEquals(customerEmail, traceWithNoArgs.getCustomerEmail());
+        assertEquals(restaurantId, traceWithNoArgs.getRestaurantId());
     }
 }

@@ -1,6 +1,8 @@
 package com.foodcourt.tracking_service.infrastructure.input.rest;
 
 import com.foodcourt.tracking_service.application.dto.request.TraceRequestDto;
+import com.foodcourt.tracking_service.application.dto.response.EmployeePerformanceResponseDto;
+import com.foodcourt.tracking_service.application.dto.response.OrderDurationResponseDto;
 import com.foodcourt.tracking_service.application.dto.response.TraceResponseDto;
 import com.foodcourt.tracking_service.application.handler.ITraceHandler;
 import io.swagger.v3.oas.annotations.Operation;
@@ -44,5 +46,29 @@ public class TraceRestController {
     @PreAuthorize("hasAuthority('ROLE_Cliente')")
     public ResponseEntity<List<TraceResponseDto>> getTraceForOrder(@PathVariable Long orderId) {
         return ResponseEntity.ok(traceHandler.getTraceForOrder(orderId));
+    }
+
+    @Operation(summary = "Obtener tiempo de pedidos por restaurante")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Tiempo de pedido por restaurante retornada correctamente"),
+            @ApiResponse(responseCode = "404", description = "Pedido no encontrado"),
+            @ApiResponse(responseCode = "403", description = "Acceso denegado, rol incorrecto")
+    })
+    @GetMapping("/durations/{restaurantId}")
+    @PreAuthorize("hasAuthority('ROLE_Propietario')")
+    public ResponseEntity<List<OrderDurationResponseDto>> getOrderDurations(@PathVariable Long restaurantId) {
+        return ResponseEntity.ok(traceHandler.getOrderDurations(restaurantId));
+    }
+
+    @Operation(summary = "Obtener ranking de empleados por restaurante")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ranking de empleados por restaurante retornada correctamente"),
+            @ApiResponse(responseCode = "404", description = "Pedido no encontrado"),
+            @ApiResponse(responseCode = "403", description = "Acceso denegado, rol incorrecto")
+    })
+    @GetMapping("/ranking/{restaurantId}")
+    @PreAuthorize("hasAuthority('ROLE_Propietario')")
+    public ResponseEntity<List<EmployeePerformanceResponseDto>> getEmployeeRanking(@PathVariable Long restaurantId) {
+        return ResponseEntity.ok(traceHandler.getEmployeeRanking(restaurantId));
     }
 }
