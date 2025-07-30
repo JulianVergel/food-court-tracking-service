@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+import static com.foodcourt.tracking_service.domain.utils.constants.DomainConstants.FIRST_TRACE;
+
 @RequiredArgsConstructor
 public class TraceUseCase implements ITraceServicePort {
 
@@ -34,7 +36,7 @@ public class TraceUseCase implements ITraceServicePort {
         }
 
         Long authenticatedUserId = authenticatedUserPort.getAuthenticatedUserId();
-        Long orderOwnerId = traceList.get(0).getCustomerId();
+        Long orderOwnerId = traceList.get(FIRST_TRACE).getCustomerId();
 
         if (!orderOwnerId.equals(authenticatedUserId)) {
             throw new AccessDeniedException();
